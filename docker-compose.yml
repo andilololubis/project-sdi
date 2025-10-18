@@ -1,12 +1,10 @@
-version: '3.8'
-
 services:
   postgres-db:
     image: postgres:15
     container_name: postgres-db
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
       POSTGRES_DB: frs_db
     volumes:
       - ./init-db.sql:/docker-entrypoint-initdb.d/init.sql
@@ -35,8 +33,8 @@ services:
       - PORT=3000
       - JWT_SECRET=yourjwtsecretkey
       # Konfigurasi koneksi ke service dalam network Docker
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=frs_db
       - POSTGRES_HOST=postgres-db
       - MONGO_URI=mongodb://mongo-db:27017/frs_db
