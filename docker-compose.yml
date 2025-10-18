@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: frs_db
+    volumes:
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  mongo-db:
+    image: mongo:6
+    container_name: mongo-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  backend-app:
+    build: ./backend
+    container_name: backend-app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres-db
+      - mongo-db
+    environment:
+      # Ganti nilai DB_TYPE antara 'postgres' dan 'mongo' untuk berganti sistem
+      - DB_TYPE=postgres 
+      - PORT=3000
+      - JWT_SECRET=yourjwtsecretkey
+      # Konfigurasi koneksi ke service dalam network Docker
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=frs_db
+      - POSTGRES_HOST=postgres-db
+      - MONGO_URI=mongodb://mongo-db:27017/frs_db
+
+volumes:
+  mongo-data:

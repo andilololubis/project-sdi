@@ -1,0 +1,44 @@
+# ## Dependencies ##
+# Folder ini berisi semua paket yang diinstal oleh npm.
+# Ukurannya bisa sangat besar dan selalu bisa dibuat ulang dengan perintah 'npm install'.
+# WAJIB diabaikan.
+/backend/node_modules
+
+# ## Environment Variables ##
+# File ini berisi data sensitif seperti password database, JWT secret, dll.
+# JANGAN PERNAH push file .env ke repository publik.
+# Sebaiknya, buat file .env.example sebagai gantinya.
+.env
+
+# ## Logs ##
+# File log bersifat spesifik untuk setiap mesin dan sesi.
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# ## Test Results ##
+# File-file ini adalah hasil mentah dari pengujian k6.
+#
+# CATATAN PENTING UNTUK PENELITIAN ANDA:
+# Dalam proyek software biasa, file hasil seperti ini SELALU diabaikan.
+# Namun, karena ini adalah penelitian, Anda MUNGKIN INGIN menyimpan file-file ini
+# sebagai bukti data mentah Anda. Jika Anda ingin menyimpannya di repo,
+# hapus baris di bawah ini. Jika tidak, biarkan saja.
+results_*.json
+
+# ## Docker ##
+# Abaikan data volume yang mungkin dibuat secara lokal oleh Docker
+mongo-data/
+
+# ## Editor & IDE Configuration ##
+# Pengaturan spesifik untuk editor kode Anda.
+.vscode/
+.idea/
+
+# ## Operating System Files ##
+# File metadata yang dibuat oleh sistem operasi.
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
