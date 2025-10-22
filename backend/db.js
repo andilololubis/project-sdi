@@ -15,7 +15,10 @@ async function connect() {
       console.error('Connection error to PostgreSQL', err.stack);
     }
   } else if (config.dbType === 'mongo') {
-    const client = new MongoClient(config.mongo.uri);
+    const client = new MongoClient(config.mongo.uri, {
+      maxPoolSize: 1100 // Izinkan 1100 koneksi (1000 VUs + cadangan)
+    });
+    
     try {
       await client.connect();
       console.log('Successfully connected to MongoDB.');

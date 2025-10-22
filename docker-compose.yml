@@ -29,7 +29,7 @@ services:
       - mongo-db
     environment:
       # Ganti nilai DB_TYPE antara 'postgres' dan 'mongo' untuk berganti sistem
-      - DB_TYPE=postgres 
+      - DB_TYPE=mongo
       - PORT=3000
       - JWT_SECRET=yourjwtsecretkey
       # Konfigurasi koneksi ke service dalam network Docker

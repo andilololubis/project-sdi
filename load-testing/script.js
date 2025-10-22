@@ -1,10 +1,7 @@
-// load-testing/script.js
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 import { SharedArray } from 'k6/data';
 
-// --- Konfigurasi Skenario Pengujian ---
-// Model Beban Kerja sesuai proposal [cite: 223, 224]
 export const options = {
   stages: [
     { duration: '2m', target: 1000 }, // Fase 1: Ramp-up ke 1000 VUs selama 2 menit [cite: 225]
@@ -14,8 +11,13 @@ export const options = {
   // Thresholds untuk kriteria lulus/gagal [cite: 230]
   thresholds: {
     'http_req_failed': ['rate<0.01'], // error rate < 1%
-    'http_req_duration{p(95)}': ['p(95)<500'], // 95% permintaan < 500ms
-    'http_req_duration{p(99)}': ['p(99)<1500'], // 99% permintaan < 1500ms
+    
+    // BENAR: Metric-nya adalah 'http_req_duration', 
+    // dan kita menambahkan beberapa expression untuknya.
+    'http_req_duration': [
+        'p(95)<500',  // 95% permintaan < 500ms
+        'p(99)<1500'  // 99% permintaan < 1500ms
+    ],
   },
 };
 
@@ -58,19 +60,24 @@ export default function () {
   check(coursesRes, { 'get courses successful': (r) => r.status === 200 });
   const courses = coursesRes.json();
   if (!courses || courses.length === 0) {
-      return; // Hentikan jika tidak ada matkul
+      return;
   }
   
   sleep(1);
   
   // 4. Memilih 5 mata kuliah secara acak untuk didaftarkan
   const coursesToEnroll = [];
-  for(let i=0; i<5; i++){
-      const randomCourse = courses[Math.floor(Math.random() * courses.length)];
-      // Pastikan tidak duplikat
-      if(randomCourse && randomCourse.id && !coursesToEnroll.includes(randomCourse.id)){
-          coursesToEnroll.push(config.dbType === 'postgres' ? randomCourse.id : randomCourse._id);
-      }
+  const enrolledIds = new Set(); // Menggunakan Set lebih efisien untuk cek duplikat
+  
+  for (let i = 0; i < 5 && i < courses.length; i++) {
+    const randomCourse = courses[Math.floor(Math.random() * courses.length)];
+    const courseId = randomCourse._id || randomCourse.id; 
+
+    // Cek jika ID ada dan belum kita tambahkan
+    if (courseId && !enrolledIds.has(courseId)) {
+        coursesToEnroll.push(courseId);
+        enrolledIds.add(courseId);
+    }
   }
 
   if (coursesToEnroll.length > 0) {
