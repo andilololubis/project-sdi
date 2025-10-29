@@ -10,6 +10,11 @@ services:
       - ./init-db.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d frs_db"] # Gunakan user & db Anda
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   mongo-db:
     image: mongo:6
@@ -25,11 +30,13 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - postgres-db
-      - mongo-db
+      postgres-db:
+        condition: service_healthy # Tunggu sampai healthcheck Postgres LULUS
+      mongo-db:
+        condition: service_started
     environment:
       # Ganti nilai DB_TYPE antara 'postgres' dan 'mongo' untuk berganti sistem
-      - DB_TYPE=mongo
+      - DB_TYPE=postgres
       - PORT=3000
       - JWT_SECRET=yourjwtsecretkey
       # Konfigurasi koneksi ke service dalam network Docker

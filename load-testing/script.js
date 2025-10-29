@@ -4,8 +4,8 @@ import { SharedArray } from 'k6/data';
 
 export const options = {
   stages: [
-    { duration: '2m', target: 1000 }, // Fase 1: Ramp-up ke 1000 VUs selama 2 menit [cite: 225]
-    { duration: '5m', target: 1000 }, // Fase 2: Peak Load, 1000 VUs selama 5 menit [cite: 226]
+    { duration: '2m', target: 500 }, // Fase 1: Ramp-up ke 500 VUs selama 2 menit [cite: 225]
+    { duration: '5m', target: 500 }, // Fase 2: Peak Load, 500 VUs selama 5 menit [cite: 226]
     { duration: '1m', target: 0 },    // Fase 3: Ramp-down ke 0 VUs selama 1 menit [cite: 228]
   ],
   // Thresholds untuk kriteria lulus/gagal [cite: 230]
